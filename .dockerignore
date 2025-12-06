@@ -1,0 +1,45 @@
+# Git
+.git/
+.gitignore
+
+# Dependencies (will be installed in container)
+node_modules/
+*/node_modules/
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Environment files (use docker secrets or env vars)
+.env*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+
+# Documentation (not needed in production image)
+*.md
+docs/
+specs/
+
+# Tests
+tests/
+**/*.test.ts
+**/*.spec.ts
+playwright-report/
+test-results/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (prevent recursive copy)
+Dockerfile*
+docker-compose*.yml
+.dockerignore

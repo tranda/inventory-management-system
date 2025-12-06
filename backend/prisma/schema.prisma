@@ -1,0 +1,183 @@
+// IT Inventory Management System - Prisma Schema
+// Constitution Art. 6: UUIDs, timestamps, soft deletes
+// Constitution Art. 5.4: Audit trail compliance
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  VIEWER
+}
+
+enum ItemCategory {
+  LAPTOP
+  MONITOR
+  KEYBOARD
+  MOUSE
+  HEADSET
+  PHONE
+  TABLET
+  CABLES
+  SOFTWARE_LICENSE
+  OTHER
+}
+
+enum ItemStatus {
+  AVAILABLE
+  ASSIGNED
+  RESERVED
+  IN_REPAIR
+  DECOMMISSIONED
+  LOST_STOLEN
+}
+
+enum ItemCondition {
+  NEW
+  GOOD
+  FAIR
+  NEEDS_REPAIR
+  DECOMMISSIONED
+}
+
+// =============================================================================
+// MODELS
+// =============================================================================
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  createdItems     Item[]       @relation("ItemCreatedBy")
+  assignmentsMade  Assignment[] @relation("AssignedBy")
+  returnsProcessed Assignment[] @relation("ReturnedBy")
+  auditLogs        AuditLog[]
+
+  @@index([email])
+  @@index([isActive])
+}
+
+model Item {
+  id                 String        @id @default(uuid())
+  assetId            String        @unique
+  name               String
+  category           ItemCategory
+  status             ItemStatus    @default(AVAILABLE)
+  condition          ItemCondition @default(NEW)
+  brand              String?
+  model              String?
+  serialNumber       String        @unique
+  purchaseDate       DateTime?
+  purchasePrice      Decimal?      @db.Decimal(10, 2)
+  warrantyExpiration DateTime?
+  location           String?
+  notes              String?
+  photoUrl           String?
+  thumbnailUrl       String?
+  deletedAt          DateTime?
+  decommissionReason String?
+  // Low stock tracking (FR-038)
+  isConsumable       Boolean       @default(false)
+  minStockLevel      Int?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  createdById        String
+  createdBy          User          @relation("ItemCreatedBy", fields: [createdById], references: [id])
+
+  // Relations
+  assignments Assignment[]
+
+  @@index([assetId])
+  @@index([serialNumber])
+  @@index([category, status])
+  @@index([status, deletedAt])
+}
+
+model Employee {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  firstName  String
+  lastName   String
+  department String?
+  title      String?
+  phone      String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  assignments Assignment[]
+
+  @@index([email])
+  @@index([isActive])
+  @@index([department])
+}
+
+model Assignment {
+  id                    String         @id @default(uuid())
+  itemId                String
+  item                  Item           @relation(fields: [itemId], references: [id])
+  employeeId            String
+  employee              Employee       @relation(fields: [employeeId], references: [id])
+  assignedById          String
+  assignedBy            User           @relation("AssignedBy", fields: [assignedById], references: [id])
+  assignedAt            DateTime
+  expectedReturnAt      DateTime?
+  purpose               String?
+  conditionAtAssignment ItemCondition
+  acknowledged          Boolean        @default(false)
+  acknowledgedAt        DateTime?
+  notes                 String?
+  returnedAt            DateTime?
+  returnedById          String?
+  returnedBy            User?          @relation("ReturnedBy", fields: [returnedById], references: [id])
+  conditionAtReturn     ItemCondition?
+  returnNotes           String?
+  transferredToId       String?        @unique
+  transferredTo         Assignment?    @relation("Transfer", fields: [transferredToId], references: [id])
+  transferredFrom       Assignment?    @relation("Transfer")
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@index([itemId, returnedAt])
+  @@index([employeeId, returnedAt])
+  @@index([assignedAt])
+}
+
+// Constitution Art. 5.4: Audit trail with who, what, when, before/after, IP, user agent
+model AuditLog {
+  id         String   @id @default(uuid())
+  entityType String
+  entityId   String
+  action     String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  before     Json?    // Entity state before (null for CREATE)
+  after      Json?    // Entity state after (null for DELETE)
+  metadata   Json     // Required: { ipAddress, userAgent } per Constitution Art. 5.4
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
+}
