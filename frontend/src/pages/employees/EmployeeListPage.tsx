@@ -116,7 +116,7 @@ export function EmployeeListPage() {
       key: 'equipment',
       header: 'Equipment',
       render: (employee) => {
-        const count = employee._count?.assignments || 0;
+        const count = employee.activeAssignmentsCount || 0;
         return (
           <div className="flex items-center gap-2">
             <Package className="h-4 w-4 text-muted-foreground" />
@@ -143,7 +143,7 @@ export function EmployeeListPage() {
         <div>
           <h1 className="text-2xl font-bold">Employees</h1>
           <p className="text-muted-foreground">
-            {pagination ? `${pagination.total} employees` : 'Loading...'}
+            {isLoading ? 'Loading...' : pagination ? `${pagination.total} employees` : `${employees.length} employees`}
           </p>
         </div>
         {canManageItems && (

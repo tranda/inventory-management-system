@@ -162,7 +162,7 @@ export function useUploadItemPhoto() {
 
   return useMutation({
     mutationFn: async ({ id, file }: { id: string; file: File }) => {
-      const response = await api.upload<Item>(`/items/${id}/photo`, file);
+      const response = await api.upload<Item>(`/items/${id}/photo`, file, 'photo');
       return response.data;
     },
     onSuccess: (data) => {

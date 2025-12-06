@@ -174,7 +174,7 @@ export function AssignmentsListPage() {
         <div>
           <h1 className="text-2xl font-bold">Assignments</h1>
           <p className="text-muted-foreground">
-            {pagination ? `${pagination.total} assignments` : 'Loading...'}
+            {isLoading ? 'Loading...' : pagination ? `${pagination.total} assignments` : `${assignments.length} assignments`}
           </p>
         </div>
         {canManageItems && (

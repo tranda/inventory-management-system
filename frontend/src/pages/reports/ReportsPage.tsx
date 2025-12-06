@@ -227,6 +227,13 @@ export function ReportsPage() {
             <div className="flex items-center justify-center py-12">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
+          ) : inventoryReport.error ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <p className="text-destructive mb-2">Failed to load inventory report</p>
+                <p className="text-sm text-muted-foreground">Please try refreshing the page</p>
+              </CardContent>
+            </Card>
           ) : inventoryReport.data ? (
             <>
               {/* Summary Cards */}
@@ -360,6 +367,13 @@ export function ReportsPage() {
             <div className="flex items-center justify-center py-12">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
+          ) : assignmentsReport.error ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <p className="text-destructive mb-2">Failed to load assignments report</p>
+                <p className="text-sm text-muted-foreground">Please try refreshing the page</p>
+              </CardContent>
+            </Card>
           ) : assignmentsReport.data ? (
             <>
               {/* Summary Cards */}

@@ -226,7 +226,7 @@ export function InventoryListPage() {
         <div>
           <h1 className="text-2xl font-bold">Inventory</h1>
           <p className="text-muted-foreground">
-            {pagination ? `${pagination.total} items` : 'Loading...'}
+            {isLoading ? 'Loading...' : pagination ? `${pagination.total} items` : `${items.length} items`}
           </p>
         </div>
         <div className="flex items-center gap-2">

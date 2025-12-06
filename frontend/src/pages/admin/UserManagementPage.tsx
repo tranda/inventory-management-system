@@ -76,7 +76,7 @@ export function UserManagementPage() {
   });
 
   const users = data?.data ?? [];
-  const pagination = data?.pagination;
+  const pagination = data?.meta?.pagination;
 
   // Mutations
   const createUser = useCreateUser();
@@ -416,8 +416,8 @@ export function UserManagementPage() {
 
       {/* Create User Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-md rounded-lg bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-2xl">
             <h3 className="text-lg font-semibold mb-4">Create New User</h3>
             <UserForm
               onSubmit={handleCreate}
@@ -431,8 +431,8 @@ export function UserManagementPage() {
 
       {/* Edit User Modal */}
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-md rounded-lg bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-2xl">
             <h3 className="text-lg font-semibold mb-4">Edit User</h3>
             <UserForm
               user={editingUser}
@@ -447,8 +447,8 @@ export function UserManagementPage() {
 
       {/* Reset Password Modal */}
       {showResetPassword && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-md rounded-lg bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-2xl">
             <h3 className="text-lg font-semibold">Reset Password</h3>
             <p className="mt-2 text-muted-foreground">
               Set a new password for {showResetPassword.firstName} {showResetPassword.lastName}
@@ -487,8 +487,8 @@ export function UserManagementPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-md rounded-lg bg-background p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-2xl">
             <h3 className="text-lg font-semibold">Delete User</h3>
             <p className="mt-2 text-muted-foreground">
               Are you sure you want to delete {showDeleteConfirm.firstName} {showDeleteConfirm.lastName}?
